@@ -66,7 +66,8 @@ forecast_out=int(math.ceil(0.01*len(df)))
 # forecast out count
 df['label'] = df[forecast_col].shift(-forecast_out)
 
-print(time.time() - start)
+print('Loading from quandl, add columns, set up prediction columns',time.time() - start, ' secs')
+
 
 # create the arrays used for training and validation
 # create array by dropping the prediction column
@@ -90,8 +91,7 @@ start = time.time()
 if(vars(args)["flag_exists"]):
     pickle_in = open('regression_model.pickle', 'rb')
     clf = pickle.load(pickle_in)
-    print('loaded previously saved model')
-
+    print('Loading previously saved model', time.time() - start, ' secs')
 else:
     # create the training and test(validation) sets
     # test_size is proportion of the dataset to use as test(validation) samples
@@ -119,8 +119,7 @@ else:
         pickle.dump(clf, f)
     print('Saved model')
 
-
-print(time.time() - start)
+    print('Training, Evaluating, Saving model', time.time() - start, ' secs')
 
 
 start = time.time()
@@ -141,8 +140,9 @@ for i in forecast_set:
     next_unix += 86400
     df.loc[next_date]=[np.nan for _ in range(len(df.columns) -1)] + [i]
 
-print(time.time() - start)
+print('Prediction and filling forecast data', time.time() - start, ' secs')
 
+print('Plotting data...See separate window')
 #Plot data
 df['Adj. Close'].plot()
 df['Prediction'].plot()
@@ -150,3 +150,4 @@ plt.legend(loc=4)
 plt.xlabel('Date')
 plt.ylabel('Price')
 plt.show()
+
