@@ -1,19 +1,30 @@
+# coding:utf-8
 #SVR and LinearRegression using quandl data. special thanks to Harisson@pythonprogramming.net
 
 import numpy as np
 import pandas as pd
 import quandl,math
 import matplotlib.pyplot as plt
+import pickle
 import datetime
 import sys
+import argparse
+import time
 
 from sklearn.linear_model import LinearRegression
 from sklearn import preprocessing, cross_validation, svm
 from sklearn.svm import SVR
 
 
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description='loads price data, trains or predicts 0.01 into the future using support vector regression')
+    parser.add_argument('-l','--load',dest='flag_exists', action='store_true', help='setting the flag loads a saved model instead of training the model. First time runs should not use this flag', required=False)
+    args = parser.parse_args()
+
 #use popular plotting package for R
 plt.style.use('ggplot')
+
+start = time.time()
 
 #get quandl financial data which contain stock prices
 #df is pandas dataframe
@@ -55,6 +66,7 @@ forecast_out=int(math.ceil(0.01*len(df)))
 # forecast out count
 df['label'] = df[forecast_col].shift(-forecast_out)
 
+print(time.time() - start)
 
 # create the arrays used for training and validation
 # create array by dropping the prediction column
@@ -68,34 +80,51 @@ X_lately = X[-forecast_out:]
 # the forecast count
 X = X[:-forecast_out]
 
-
 # Create an array of the prediction label column up to the count excluding the
 # forecast count
 df.dropna(inplace=True)
 y=np.array(df['label'])
 
+start = time.time()
 
-# create the training and test(validation) sets
-# test_size is proportion of the dataset to use as test(validation) samples
-# train and calculate confidence
-X_train, X_test, y_train, y_test = cross_validation.train_test_split(X, y, test_size=0.3)
+if(vars(args)["flag_exists"]):
+    pickle_in = open('regression_model.pickle', 'rb')
+    clf = pickle.load(pickle_in)
+    print('loaded previously saved model')
 
+else:
+    # create the training and test(validation) sets
+    # test_size is proportion of the dataset to use as test(validation) samples
+    # train and calculate confidence
+    X_train, X_test, y_train, y_test = cross_validation.train_test_split(X, y, test_size=0.3)
 
-#try out kernels in SVR
-kernel_confidence = dict()
-for k in ['linear','poly','rbf','sigmoid']:
-    clf = svm.SVR(kernel=k)
-    clf.fit(X_train, y_train)
-    confidence = clf.score(X_test, y_test)
-    kernel_confidence[k]=confidence
-    print(k, confidence)
+    #try out kernels in SVR
+    kernel_confidence = dict()
+    for k in ['linear','poly','rbf','sigmoid']:
+        clf = svm.SVR(kernel=k)
+        clf.fit(X_train, y_train)
+        confidence = clf.score(X_test, y_test)
+        kernel_confidence[k]=confidence
+        print(k, confidence)
 
-kernel_confidence_sorted = sorted(kernel_confidence.items(), key=lambda x:
+    kernel_confidence_sorted = sorted(kernel_confidence.items(), key=lambda x:
                                   x[1], reverse=True)
 
-#Predict using the best kernel and fill the forecast set with the predicted data 
-clf = svm.SVR(kernel=kernel_confidence_sorted[0][0])
-clf.fit(X_train,y_train)
+    #Predict using the best kernel and fill the forecast set with the predicted data 
+    clf = svm.SVR(kernel=kernel_confidence_sorted[0][0])
+    clf.fit(X_train,y_train)
+
+    #Save the model
+    with open('regression_model.pickle','wb') as f:
+        pickle.dump(clf, f)
+    print('Saved model')
+
+
+print(time.time() - start)
+
+
+start = time.time()
+#create forecast
 forecast_set = clf.predict(X_lately)
 
 df['Prediction']=np.nan
@@ -111,6 +140,8 @@ for i in forecast_set:
     next_date=datetime.datetime.fromtimestamp(next_unix)
     next_unix += 86400
     df.loc[next_date]=[np.nan for _ in range(len(df.columns) -1)] + [i]
+
+print(time.time() - start)
 
 #Plot data
 df['Adj. Close'].plot()
