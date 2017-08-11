@@ -31,6 +31,13 @@ def coefficient_of_determination(ys_orig,ys_line):
 
 #creating dataset
 def create_dataset(hm,variance, step=2,correlation=False):
+    """create_dataset
+
+    :param hm: how much = how big is data set
+    :param variance: range of values (postitive and negative, centered from an incremental value val
+    :param step: step is added for every increment in val
+    :param correlation: 'pos' or 'neg' (positive or negative)
+    """
     val =1
     ys=[]
     for i in range(hm):
@@ -45,7 +52,7 @@ def create_dataset(hm,variance, step=2,correlation=False):
     return np.array(xs, dtype=np.float64),np.array(ys,dtype=np.float64)
 
 #create a data set
-xs, ys = create_dataset(40, 40, 2, correlation='pos')
+xs, ys = create_dataset(40, 10, 2, correlation='neg')
 
 m, b = best_fit_slope_and_intercept(xs,ys)
 print('best slope coeffcient=',m,'best intercept=',b)
