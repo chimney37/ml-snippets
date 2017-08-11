@@ -60,4 +60,3 @@ plt.plot(xs, regression_line, label='regression line')
 plt.legend(loc=4)
 plt.show()
 
-
