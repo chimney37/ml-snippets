@@ -1,20 +1,27 @@
-# coding:utf-8
-#SVR and LinearRegression using quandl data. special thanks to Harisson@pythonprogramming.net
+#! /usr/bin/env python
+# -*- coding:utf-8
+# SVR and LinearRegression using quandl data.
+# Special thanks: Harisson@pythonprogramming.net
 
+'''
+    File name: svr_test.py
+    Author: chimney37
+    Date created: 8/10/2017
+    Python Version: 3.62
+'''
+
+import datetime
+import sys
+import time
+import argparse
 import numpy as np
 import pandas as pd
 import quandl,math
 import matplotlib.pyplot as plt
 import pickle
-import datetime
-import sys
-import argparse
-import time
 
 from sklearn.linear_model import LinearRegression
 from sklearn import preprocessing, cross_validation, svm
-from sklearn.svm import SVR
-
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='loads price data, trains or predicts 0.01 into the future using support vector regression')
