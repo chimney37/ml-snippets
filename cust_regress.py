@@ -1,4 +1,14 @@
-# coding:utf-8
+##! /usr/bin/env python
+# -*- coding:utf-8
+# Custom model creation, squared error, coefficient of determination, data creation and plotting
+# Special thanks: Harisson@pythonprogramming.net
+
+'''
+    File name: cust_regress.py
+    Author: chimney37
+    Date created: 8/11/2017
+    Python Version: 3.62
+'''
 
 import numpy as np
 import matplotlib.pyplot as plt
