@@ -14,7 +14,7 @@ from matplotlib import style
 import numpy as np
 style.use('ggplot')
 
-'''
+#fitment data
 X = np.array([[1,2],
               [1.5,1.8],
               [5,8],
@@ -26,7 +26,7 @@ X = np.array([[1,2],
               [0,3],
               [5,4],
               [6,4],])
-'''
+
 #plt.scatter(X[:,0],X[:,1], s=150, linewidths=5, zorder=10)
 #plt.show()
 
@@ -41,35 +41,50 @@ class K_Means:
     def fit(self,data):
         self.centroids={}
 
+        #initialize centroids. If k=2, there are 2 centroids
         for i in range(self.k):
             self.centroids[i]=data[i]
 
         for i in range(self.max_iter):
             self.classifications={}
 
+            #initialize classifications as empty list. If k=2, there are 2 classifications
             for i in range(self.k):
                 self.classifications[i]=[]
 
+            #for each featureset, measure a distance from centroid
+            #classify each featureset based on the minimum distance index
+            # e.g. if k==2, distances is a 2 dimensional array
+            # [distance to centroid1, distance to centroid2]
+            #add the featureset to a "classification" that picks
+            #the shorter distance
             for featureset in data:
                 distances=[np.linalg.norm(featureset-self.centroids[centroid]) for centroid in self.centroids]
+                print("distances:",distances)
                 classification=distances.index(min(distances))
+                #print(classification)
                 self.classifications[classification].append(featureset)
-            prev_centroids=dict(self.centroids)
+            #print(self.classifications)
 
+            prev_centroids=dict(self.centroids)
+            #compute the centroid for an iteration through an average of the featuresets added to a "classification"
             for classification in self.classifications:
                 self.centroids[classification] =np.average(self.classifications[classification],axis=0)
 
-            optimized=True
+            #print(self.centroids)
 
+            optimized=True
+            #compute movement of centroids, if they are bigger than tolerance
             for c in self.centroids:
                 original_centroid=prev_centroids[c]
                 current_centroid=self.centroids[c]
-                stability=np.sum((current_centroid-original_centroid)/original_centroid*100.0)
+                movement=np.sum((current_centroid-original_centroid)/original_centroid*100.0)
 
-                if stability > self.tol:
-                    print(stability)
+                if movement > self.tol:
+                    print("movement of centroid:",movement)
                     optimized=False
 
+            print("movement of centroid:",movement)
             if optimized:
                 break
 
@@ -78,10 +93,11 @@ class K_Means:
         classification=distances.index(min(distances))
         return classification
 
-'''
+# fit data on fitment data
 clf = K_Means()
 clf.fit(X)
 
+#plot the centroids and the featuresets that were classified
 for centroid in clf.centroids:
     plt.scatter(clf.centroids[centroid][0],clf.centroids[centroid][1], marker="o",
                 color="k",s=150,linewidths=2)
@@ -100,8 +116,7 @@ for classification in clf.classifications:
 #for unknown in unknowns:
 #    classification=clf.predict(unknown)
 #    plt.scatter(unknown[0],unknown[1],marker="*",color=colors[classification],s=150,linewidths=5)
-
-#plt.show()
-
+'''
+plt.show()
 
 

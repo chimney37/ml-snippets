@@ -83,8 +83,9 @@ y=np.array(df['survived'])
 
 print(y)
 
-#clf = ckm.K_Means()
-clf = KMeans(n_clusters=2)
+#use the custom kmeans
+clf = ckm.K_Means()
+#clf = KMeans(n_clusters=2)
 clf.fit(X)
 
 # a bit strange as the predictio can be 0 or 1 (switched?)
