@@ -1,6 +1,6 @@
 #! /usr/bin/env python
 # -*- coding:utf-8
-# Handling non-numerical data (titanic.xls) 
+# Handling non-numerical data (titanic.xls) and KMeans to predict survivability 
 # Special thanks: Harisson@pythonprogramming.net
 
 '''
@@ -12,6 +12,7 @@
 import matplotlib.pyplot as plt
 from matplotlib import style
 import numpy as np
+import cust_kmeans as ckm 
 from sklearn.cluster import KMeans
 from sklearn import preprocessing, cross_validation
 import pandas as pd
@@ -71,3 +72,28 @@ def handle_non_numerical_data(df):
 # do non-numerical processing and assign numericals to non-numerical values
 df = handle_non_numerical_data(df)
 print(df.head())
+
+#drop features to see impact
+df.drop(['ticket','home.dest'],1,inplace=True)
+
+#training data, take out the survived since that is what we want predicted
+X=np.array(df.drop(['survived'],1).astype(float))
+X=preprocessing.scale(X)
+y=np.array(df['survived'])
+
+print(y)
+
+#clf = ckm.K_Means()
+clf = KMeans(n_clusters=2)
+clf.fit(X)
+
+# a bit strange as the predictio can be 0 or 1 (switched?)
+correct = 0
+for i in range(len(X)):
+    predict_me=np.array(X[i].astype(float))
+    predict_me=predict_me.reshape(-1,len(predict_me))
+    prediction=clf.predict(predict_me)
+    if prediction==y[i]:
+        correct+=1
+
+print(correct/len(X))
