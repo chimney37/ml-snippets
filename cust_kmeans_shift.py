@@ -27,6 +27,7 @@ X = np.array([[1,2],
 colors=10*["g","r","c","b","k"]
 
 class Mean_Shift:
+    #initially fix the radius as 4
     def __init__(self, radius=4):
         self.radius = radius
 
@@ -38,6 +39,7 @@ class Mean_Shift:
             centroids[i] = data[i]
 
         #take mean of all featuresets within centroid's radius
+        #repeat until convergence
         while True:
             new_centroids=[]
             for i in centroids:
@@ -62,12 +64,15 @@ class Mean_Shift:
 
             optimized = True
 
+            #compare previous centroids to the previous ones, and measure movement.
             for i in centroids:
+                #if centroid moved, not converged
                 if not np.array_equal(centroids[i], prev_centroids[i]):
                     optimized=False
                 if not optimized:
                     break
 
+            #get out of loop when converged
             if optimized:
                 break
 
