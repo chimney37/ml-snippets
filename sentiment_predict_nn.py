@@ -93,12 +93,12 @@ def neural_network_model(data):
 
     # input_data * weights + biases (matrix multiplication)
     # relu: recified linear: this is the activation function (threshold)
-    l1 = tf.add(tf.matmul(data, hidden_1_layer['weight']), hidden_1_layer['bias']) 
+    l1 = tf.add(tf.matmul(data, hidden_1_layer['weight']), hidden_1_layer['bias'])
     l1 = tf.nn.relu(l1)
 
     l2 = tf.add(tf.matmul(l1, hidden_2_layer['weight']), hidden_2_layer['bias'])
     l2 = tf.nn.relu(l2)
-    
+
     l3 = tf.add(tf.matmul(l2, hidden_3_layer['weight']), hidden_3_layer['bias'])
     l3 = tf.nn.relu(l3)
 
