@@ -83,7 +83,9 @@ def create_lexicon(pos,neg):
         # lexicon. Should be a function of % of entire dataset
         if 1000 > w_counts[w] > 50:
             l2.append(w)
-    print("len of l2:" + str(len(l2)))
+    print("example of lemmas in lexicon:")
+    print(l2)
+    print("len of lexicon:" + str(len(l2)))
     return l2
 
 # create feature vector
@@ -103,23 +105,26 @@ def sample_handling(sample, lexicon, classification):
 
             features = list(features)
             featureset.append([features,classification])
-
+        print("Created featureset")
+        print("E.g.:",featureset[0])
     return featureset
 
+# creates feature sets(inputs) and labels(output) for training and testing
 def create_feature_sets_and_labels(pos,neg,test_size=0.1):
     lexicon = create_lexicon(pos,neg)
-    features=[]
-    features += sample_handling('ident_nn_pos.txt',lexicon,[1,0])
-    features += sample_handling('ident_nn_neg.txt',lexicon,[0,1])
-    random.shuffle(features)
-    features = np.array(features)
+    featureset=[]
+    featureset += sample_handling(pos,lexicon,[1,0])
+    featureset += sample_handling(neg,lexicon,[0,1])
+    random.shuffle(featureset)
+    featureset = np.array(featureset)
 
-    testing_size = int(test_size*len(features))
+    testing_size = int(test_size*len(featureset))
+    print("testing size:",testing_size)
 
-    train_x = list(features[:,0][:-testing_size])
-    train_y = list(features[:,1][:-testing_size])
-    test_x = list(features[:,0][-testing_size:])
-    test_y = list(features[:,1][-testing_size:])
+    train_x = list(featureset[:,0][:-testing_size])
+    train_y = list(featureset[:,1][:-testing_size])
+    test_x = list(featureset[:,0][-testing_size:])
+    test_y = list(featureset[:,1][-testing_size:])
 
     return train_x, train_y, test_x, test_y
 
