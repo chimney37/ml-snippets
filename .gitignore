@@ -99,6 +99,6 @@ ENV/
 .mypy_cache/
 
 # pickle
-.pickle
+*.pickle
 
 
