@@ -61,7 +61,7 @@ n_nodes_hl2 = 1500
 n_nodes_hl3 = 1500
 n_classes = 2
 batch_size = 100
-hm_epochs = 10
+hm_epochs = 14
 
 # specifying input and output without shape
 x = tf.placeholder('float')
