@@ -80,6 +80,8 @@ if __name__ == "__main__":
     parser.add_argument('-e', "--epochs",default=10, help='an integer specifying\
                         number of epochs for training.',
                         type=int)
+    parser.add_argument('-u',action='store_true',help='only use neural network\
+                        without training step')
     args = parser.parse_args()
 
 #important parameters
@@ -135,6 +137,17 @@ def neural_network_model(data):
 saver = tf.train.Saver()
 tf_log = 'tf.log'
 
+def extract_features(input_data,lexicon):
+    current_words = word_tokenize(input_data.lower())
+    current_words = [lemmatizer.lemmatize(i).lower() for i in current_words]
+    features = np.zeros(len(lexicon))
+
+    for word in current_words:
+        if word in lexicon:
+            index_value = lexicon.index(word)
+            features[index_value]+=1
+
+    return features
 
 def train_neural_network(x):
     # we produce a prediction based on the neural network model
@@ -175,16 +188,8 @@ def train_neural_network(x):
 
                     label = line.split(':::')[0]
                     tweet = line.split(':::')[1]
-                    current_words = word_tokenize(tweet.lower())
-                    current_words = [lemmatizer.lemmatize(i).lower() for i in
-                                     current_words]
+                    features=extract_features(tweet,lexicon)
 
-                    features = np.zeros(len(lexicon))
-                    
-                    for word in current_words:
-                        if word in lexicon:
-                            index_value = lexicon.index(word)
-                            features[index_value]+=1
                     line_x = list(features)
                     line_y = eval(label)
                     batch_x.append(line_x)
@@ -208,7 +213,8 @@ def train_neural_network(x):
             print("Satisfied target epochs:", str(hm_epochs))
         print("Training Complete.")
 
-train_neural_network(x)
+if args.u is False:
+    train_neural_network(x)
 
 def test_neural_network():
     prediction = neural_network_model(x)
@@ -245,3 +251,25 @@ def test_neural_network():
         print('Accuracy:',accuracy.eval({x:test_x,y:test_y}))
 
 test_neural_network()
+
+def use_neural_network(input_data):
+    prediction=neural_network_model(x)
+    with open('lexicon.pickle','rb') as f:
+        lexicon=pickle.load(f)
+
+    with tf.Session() as sess:
+        sess.run(tf.initialize_all_variables())
+        saver.restore(sess,"model.ckpt")
+        features=extract_features(input_data,lexicon)
+
+        features=np.array(list(features))
+        #pos: [1,0], argmax:0
+        #neg: [0,1], argmax:1
+        result=(sess.run(tf.argmax(prediction.eval(feed_dict={x:[features]}),1)))
+        if result[0] == 0:
+            print('Positive:',input_data)
+        elif result[0] == 1:
+            print('Negative:',input_data)
+
+use_neural_network("He's an idiot and a jerk")
+use_neural_network("This was the best store I've ever seen.")
