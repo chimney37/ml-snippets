@@ -101,4 +101,11 @@ ENV/
 # pickle
 *.pickle
 
+# custom data files
+*.csv
+*.tsv
+*.txt
 
+# tensor flow model files
+model.ckpt*
+checkpoint
