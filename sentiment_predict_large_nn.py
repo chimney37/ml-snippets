@@ -1,6 +1,6 @@
 #! /usr/bin/env python
 # -*- coding:utf-8
-# Using Large Data from Stanford, Predicting sentiments using a deep neural network with tensorflow. 
+# Using Large Data from Stanford(Sentiment140), Predicting sentiments using a deep neural network with tensorflow. 
 # Special thanks: Harisson@pythonprogramming.net
 
 '''
@@ -82,17 +82,20 @@ if __name__ == "__main__":
                         type=int)
     parser.add_argument('-u',action='store_true',help='only use neural network\
                         without training step')
+    parser.add_argument('-p',"--predict",type=str,help='string to predict\
+                        sentiment')
     args = parser.parse_args()
 
-#important parameters
-n_nodes_hl1 = 500
-n_nodes_hl2 = 500
-n_classes = 2
+#important parameters and properties
+data_delimiter=':;#$%&'
 batch_size = 32
 training_size = args.num_training_size
 total_batches = int(training_size/batch_size)
 hm_epochs = args.epochs
 data_width = 2378
+n_nodes_hl1 = data_width
+n_nodes_hl2 = 1500
+n_classes = 2
 
 print(getcwd())
 
@@ -186,11 +189,13 @@ def train_neural_network(x):
                     if line_counter >= training_size:
                         break
 
-                    label = line.split(':::')[0]
-                    tweet = line.split(':::')[1]
+                    elements=line.split(data_delimiter)
+                    label = elements[0]
+                    tweet = elements[1]
                     features=extract_features(tweet,lexicon)
 
                     line_x = list(features)
+                    #label can be [1,0] or [0,1], so eval runs that to create lists
                     line_y = eval(label)
                     batch_x.append(line_x)
                     batch_y.append(line_y)
@@ -203,7 +208,7 @@ def train_neural_network(x):
                         batches_run+=1
                         print('Batch run:',batches_run,'/',total_batches,'| \
                               Epoch:',epoch,'| Batch Loss:',c,)
-            
+
             saver.save(sess,path.join(getcwd(),"model.ckpt"))
             print('Epoch', epoch, 'completed out of', hm_epochs, 'loss:',epoch_loss)
             with open(tf_log,'a') as f:
@@ -258,7 +263,7 @@ def use_neural_network(input_data):
         lexicon=pickle.load(f)
 
     with tf.Session() as sess:
-        sess.run(tf.initialize_all_variables())
+        sess.run(tf.global_variables_initializer())
         saver.restore(sess,"model.ckpt")
         features=extract_features(input_data,lexicon)
 
@@ -267,9 +272,16 @@ def use_neural_network(input_data):
         #neg: [0,1], argmax:1
         result=(sess.run(tf.argmax(prediction.eval(feed_dict={x:[features]}),1)))
         if result[0] == 0:
-            print('Positive:',input_data)
+            print('Negative:',input_data,result)
         elif result[0] == 1:
-            print('Negative:',input_data)
+            print('Positive:',input_data,result)
+
+if args.predict is not None:
+    use_neural_network(args.predict)
 
 use_neural_network("He's an idiot and a jerk")
+use_neural_network("die sucker")
+use_neural_network("i don't like this at all")
 use_neural_network("This was the best store I've ever seen.")
+use_neural_network("Never ever buy from this seller. worst ever")
+use_neural_network("happiest moment of my life")
