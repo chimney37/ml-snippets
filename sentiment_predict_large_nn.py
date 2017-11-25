@@ -240,8 +240,8 @@ def test_neural_network():
         with open('processed-test-set.csv', buffering=20000) as f:
             for line in f:
                 try:
-                    features=list(eval(line.split('::')[0]))
-                    label=list(eval(line.split('::')[1]))
+                    features=list(eval(line.split(data_delimiter)[0]))
+                    label=list(eval(line.split(data_delimiter)[1]))
 
                     feature_sets.append(features)
                     labels.append(label)
