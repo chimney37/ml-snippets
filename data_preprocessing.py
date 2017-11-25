@@ -107,7 +107,7 @@ class SentimentPreProcess():
         df=df.iloc[np.random.permutation(len(df))]
         print(df.head())
         print(Counter(df['sentiment']))
-        df.to_csv('train_set_shuffled.csv',index=False)
+        df.to_csv('train_set_shuffled.csv',header=False,index=False)
 
     def create_test_data_pickle(self,fin):
         feature_sets=[]
