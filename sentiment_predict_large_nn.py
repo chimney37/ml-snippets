@@ -39,10 +39,13 @@ import tensorflow as tf
 import nltk
 from nltk.tokenize import word_tokenize
 from nltk.stem import WordNetLemmatizer
+from data_preprocessing import SentimentPreProcess
 import pickle
 import numpy as np
 import argparse
 
+process = SentimentPreProcess()
+process.load_lexicon('lexicon.pickle')
 lemmatizer = WordNetLemmatizer()
 
 # one_hot means one eleent out of others is literally "hot" or on. This is useful for a
@@ -87,14 +90,15 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
 #important parameters and properties
-data_delimiter=':;#$%&'
+data_delimiter=process.data_delimiter
 batch_size = 32
 training_size = args.num_training_size
 total_batches = int(training_size/batch_size)
 hm_epochs = args.epochs
-data_width = 2378
+data_width = len(process.lexicon)
+print("data width:",data_width)
 n_nodes_hl1 = data_width
-n_nodes_hl2 = 1500
+n_nodes_hl2 = 1800
 n_classes = 2
 
 print(getcwd())
@@ -267,9 +271,8 @@ def use_neural_network(input_data):
         saver.restore(sess,"model.ckpt")
         features=extract_features(input_data,lexicon)
 
-        features=np.array(list(features))
-        #pos: [1,0], argmax:0
-        #neg: [0,1], argmax:1
+        #neg: [1,0], argmax:0
+        #pos: [0,1], argmax:1
         result=(sess.run(tf.argmax(prediction.eval(feed_dict={x:[features]}),1)))
         if result[0] == 0:
             print('Negative:',input_data,result)
@@ -277,11 +280,11 @@ def use_neural_network(input_data):
             print('Positive:',input_data,result)
 
 if args.predict is not None:
+    #print(args.predict)
     use_neural_network(args.predict)
-
-use_neural_network("He's an idiot and a jerk")
-use_neural_network("die sucker")
-use_neural_network("i don't like this at all")
-use_neural_network("This was the best store I've ever seen.")
-use_neural_network("Never ever buy from this seller. worst ever")
-use_neural_network("happiest moment of my life")
+    use_neural_network("He's an idiot and a jerk")
+    use_neural_network("die sucker")
+    use_neural_network("i don't like this at all")
+    use_neural_network("This was the best store I've ever seen.")
+    use_neural_network("Never ever buy from this seller. worst ever")
+    use_neural_network("happiest moment of my life")
