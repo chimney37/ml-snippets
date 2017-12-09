@@ -11,30 +11,31 @@
 '''
 '''
 We will use the MNIST data, using 60000 training samples and 10000 testing samples of
-handwritten and labeled digits, 0 through 9, i.e. 10 total "classes". In actual deep
+handwritten and labeled digits, 0 through 9, i.e. 10 total "classes". Actual deep
 learning requires half a billion samples for accuracy. It's small enough to work on
 any computers. MNIST dataset of images 28x28:784 pixels. Either pixel is "blank" i.e.
 0 or there is something there : 0. We will predict the number we're looking at
 (0,1,2,...8 or 9).
 
-In a traditional neural network: input data will send to hidden layer 1, that is weighted. It will undergo an
+In a traditional single layer neural network: input data will send to hidden layer, that is weighted. It will undergo an
 activation function, so neuron can decided to fire and output data to either output
-layer, or another hidden layer. We can an example of 3 hidden layers. We will use a cost
-function (loss function), to determine how wrong we are. Lastly, we will use an
-optimizer function: Adam optimizer, to minimize the cost. Cost is minimized by
-tinkering with weights. How quickly we want to lower the cost is determined by
-learning rate. The lower the value for learning rate, the slower we will learn, and
-more likely we'd get better results. 
+layer, or another hidden layer, in the case of multi-layered neural networks. 
 
-Recurrent neural networks, the data is passed into a cell. Along with
+In Recurrent neural networks (RNN), the data is passed into a cell. Along with
 outputting the activation function's output, we take the output and include it as an input back
 to a cell. The problem is 1) how should we weight new incoming data vs. the
 recurring data. How much of this shoul we continue down the line, as the
 initial signal can dominate everything downt the line.
 
-LSTM: Long short term memory is a way to decide what we do with the reurring
+LSTM: Long short term memory is a form of RNN to decide what we do with the reurring
 data, i.e 1) what to forget or keep for the recurring data;2) what new to add
 based on what we keep; 3) what to output as a result of 1) and 2). 
+
+We will use a cost function (loss function), to determine how wrong we are. Lastly, we will use an
+optimizer function: Adam optimizer, to minimize the cost. Cost is minimized by
+tinkering with weights. How quickly we want to lower the cost is determined by
+learning rate. The lower the value for learning rate, the slower we will learn, and
+more likely we'd get better results. 
 
 One training cycle involving all data is called an Epoch. We can pick any number for number of epochs. After each epoch, we've
 hopefully further fine-tuned our weights lowering our cost and improving accuracy.
