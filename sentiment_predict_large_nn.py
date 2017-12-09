@@ -78,13 +78,10 @@ if __name__ == "__main__":
                         default=max_training_size, help='an integer\
                         specifying training data size. Maximum is ' +
                         str(max_training_size),
-                        required=True,
                         type=check_range)
     parser.add_argument('-e', "--epochs",default=10, help='an integer specifying\
                         number of epochs for training.',
                         type=int)
-    parser.add_argument('-u',action='store_true',help='only use neural network\
-                        without training step')
     parser.add_argument('-p',"--predict",type=str,help='string to predict\
                         sentiment')
     args = parser.parse_args()
@@ -222,7 +219,7 @@ def train_neural_network(x):
             print("Satisfied target epochs:", str(hm_epochs))
         print("Training Complete.")
 
-if args.u is False:
+if (args.num_training_size is not None) and (args.epochs is not None):
     train_neural_network(x)
 
 def test_neural_network():
