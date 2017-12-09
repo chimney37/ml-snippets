@@ -31,6 +31,8 @@ LSTM: Long short term memory is a form of RNN to decide what we do with the reur
 data, i.e 1) what to forget or keep for the recurring data;2) what new to add
 based on what we keep; 3) what to output as a result of 1) and 2). 
 
+For more information on why RNN works, read: http://karpathy.github.io/2015/05/21/rnn-effectiveness/
+
 We will use a cost function (loss function), to determine how wrong we are. Lastly, we will use an
 optimizer function: Adam optimizer, to minimize the cost. Cost is minimized by
 tinkering with weights. How quickly we want to lower the cost is determined by
