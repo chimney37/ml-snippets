@@ -46,6 +46,11 @@ layer, by convoluting the filter with the input data. (which is why
 mathematical convolution and CNN is similar)
 Reference: https://www.quora.com/Are-convolutional-neural-networks-related-to-the-convolution-of-two-functions-in-mathematics
 
+for more understanding on convolutional_neural_network and the act of
+convolution, refer to:
+https://www.analyticsvidhya.com/blog/2017/06/architecture-of-convolutional-neural-networks-simplified-demystified/
+
+
 We will use a cost function (loss function), to determine how wrong we are. We
 will use an optimizer function: Adam optimizer, to minimize the cost. Cost is
 minimized by tinkering with weights. How quickly we want to lower the cost is determined by
@@ -93,6 +98,7 @@ y = tf.placeholder('float')
 # strides indicate movement of window. 1 means we just move 1 and a time, in
 # conv2d, and 2 at a time in maxpool2d. ksize is size of pooling window. In
 # this case we are using 2x2 pixels for pooling.
+# padding is SAME means the output image has same size as input
 def conv2d(x, W):
     return tf.nn.conv2d(x, W, strides=[1,1,1,1], padding='SAME')
 
