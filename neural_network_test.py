@@ -1,6 +1,6 @@
 #! /usr/bin/env python
 # -*- coding:utf-8
-# Testing a deep neural network with tensorflow. 
+# Testing a deep neural network (multi layered perceptron model) with tensorflow. 
 # Special thanks: Harisson@pythonprogramming.net
 
 '''
