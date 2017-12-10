@@ -4,7 +4,7 @@
 # Special thanks: Harisson@pythonprogramming.net
 
 '''
-    File name: neural_network_test.py
+    File name: cnn_test.py
     Author: chimney37
     Date created: 12/09/2017
     Python Version: 3.62
