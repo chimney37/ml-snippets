@@ -1,6 +1,6 @@
 #! /usr/bin/env python
 # -*- coding:utf-8
-#Recurrent Neural network with LSTM in Tensorflow
+# Recurrent Neural network with LSTM in Tensorflow
 # Special thanks: Harisson@pythonprogramming.net
 
 '''
@@ -19,17 +19,17 @@ any computers. MNIST dataset of images 28x28:784 pixels. Either pixel is "blank"
 
 In a traditional single layer neural network: input data will send to hidden layer, that is weighted. It will undergo an
 activation function, so neuron can decided to fire and output data to either output
-layer, or another hidden layer, in the case of multi-layered neural networks. 
+layer, or another hidden layer, in the case of multi-layered neural network.
 
 In Recurrent neural networks (RNN), the data is passed into a cell. Along with
 outputting the activation function's output, we take the output and include it as an input back
 to a cell. The problem is 1) how should we weight new incoming data vs. the
-recurring data. How much of this shoul we continue down the line, as the
+recurring data. How much of this should we continue down the line, as the
 initial signal can dominate everything downt the line.
 
 LSTM: Long short term memory is a form of RNN to decide what we do with the reurring
 data, i.e 1) what to forget or keep for the recurring data;2) what new to add
-based on what we keep; 3) what to output as a result of 1) and 2). 
+based on what we keep; 3) what to output as a result of 1) and 2).
 
 For more information on what is so facinating about RNN, read: http://karpathy.github.io/2015/05/21/rnn-effectiveness/
 
@@ -37,7 +37,7 @@ We will use a cost function (loss function), to determine how wrong we are. Last
 optimizer function: Adam optimizer, to minimize the cost. Cost is minimized by
 tinkering with weights. How quickly we want to lower the cost is determined by
 learning rate. The lower the value for learning rate, the slower we will learn, and
-more likely we'd get better results. 
+more likely we'd get better results.
 
 One training cycle involving all data is called an Epoch. We can pick any number for number of epochs. After each epoch, we've
 hopefully further fine-tuned our weights lowering our cost and improving accuracy.
