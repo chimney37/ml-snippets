@@ -41,7 +41,6 @@ more likely we'd get better results.
 
 One training cycle involving all data is called an Epoch. We can pick any number for number of epochs. After each epoch, we've
 hopefully further fine-tuned our weights lowering our cost and improving accuracy.
-
 '''
 import tensorflow as tf
 from tensorflow.examples.tutorials.mnist import input_data
@@ -133,4 +132,5 @@ def train_neural_network(x):
         print('Accuracy:',
               accuracy.eval({x:mnist.test.images.reshape((-1,n_chunks,chunk_size)), y:mnist.test.labels}))
 
+#train neural network
 train_neural_network(x)
