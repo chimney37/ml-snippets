@@ -15,7 +15,7 @@ from matplotlib import style
 import numpy as np
 from sklearn.cluster import MeanShift
 from sklearn.datasets.samples_generator import make_blobs
-from mpl_toolkits.mplot3d import Axes3D
+from mpl_toolkits.mplot3d import Axes3D  # flake8: NOQA
 style.use('ggplot')
 
 centers = [[1, 1, 1], [5, 5, 5], [3, 10, 10]]
