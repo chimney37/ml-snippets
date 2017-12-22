@@ -9,6 +9,14 @@
     Date created: 11/12/2017
     Python Version: 3.62
 '''
+import nltk  # flake8: NOQA
+from nltk.tokenize import word_tokenize
+import numpy as np
+import random
+import pickle
+from collections import Counter
+from nltk.stem import WordNetLemmatizer
+
 '''
 This is an example for an approach that does not assume preloaded data and
 setup. This is the usual challange with machine learning - how do we prepare
@@ -46,39 +54,33 @@ WordNet. This will help us keep our lexicon smaller,
 without losing too much value.
 '''
 
-import nltk
-from nltk.tokenize import word_tokenize
-import numpy as np
-import random
-import pickle
-from collections import Counter
-from nltk.stem import WordNetLemmatizer
-
 lemmatizer = WordNetLemmatizer()
 
-#for doing up to this amount of rows of data
+# for doing up to this amount of rows of data
 hm_lines = 100000
 
-#We will be used to sort most common lemmas, and pickle to save the process so
-#we don't repeat every time
+# We will be used to sort most common lemmas, and pickle to save the process so
+# we don't repeat every time
 
-def create_lexicon(pos,neg):
+
+def create_lexicon(pos, neg):
     lexicon = []
-    def create(src,lexicon):
-        with open(src,'r') as f:
+
+    def create(src, lexicon):
+        with open(src, 'r') as f:
             contents = f.readlines()
             for l in contents[:hm_lines]:
-                all_words=word_tokenize(l)
+                all_words = word_tokenize(l)
                 lexicon += list(all_words)
 
-    create(pos,lexicon)
-    create(neg,lexicon)
+    create(pos, lexicon)
+    create(neg, lexicon)
 
     lexicon = [lemmatizer.lemmatize(i) for i in lexicon]
     w_counts = Counter(lexicon)
     l2 = []
     for w in w_counts:
-        #print(w_counts[w])
+        # print(w_counts[w])
         # if word occurs less than 1000 but more than 50, include it in
         # lexicon. Should be a function of % of entire dataset
         if 1000 > w_counts[w] > 50:
@@ -88,12 +90,13 @@ def create_lexicon(pos,neg):
     print("len of lexicon:" + str(len(l2)))
     return l2
 
+
 # create feature vector
 def sample_handling(sample, lexicon, classification):
     featureset = []
 
-    with open(sample,'r') as f:
-        contents=f.readlines()
+    with open(sample, 'r') as f:
+        contents = f.readlines()
         for l in contents[:hm_lines]:
             current_words = word_tokenize(l.lower())
             current_words = [lemmatizer.lemmatize(i) for i in current_words]
@@ -101,35 +104,37 @@ def sample_handling(sample, lexicon, classification):
             for word in current_words:
                 if word.lower() in lexicon:
                     index_value = lexicon.index(word.lower())
-                    features[index_value]+=1
+                    features[index_value] += 1
 
             features = list(features)
-            featureset.append([features,classification])
+            featureset.append([features, classification])
         print("Created featureset")
-        print("E.g.:",featureset[0])
+        print("E.g.:", featureset[0])
     return featureset
 
+
 # creates feature sets(inputs) and labels(output) for training and testing
-def create_feature_sets_and_labels(pos,neg,test_size=0.1):
-    lexicon = create_lexicon(pos,neg)
-    featureset=[]
-    featureset += sample_handling(pos,lexicon,[1,0])
-    featureset += sample_handling(neg,lexicon,[0,1])
+def create_feature_sets_and_labels(pos, neg, test_size=0.1):
+    lexicon = create_lexicon(pos, neg)
+    featureset = []
+    featureset += sample_handling(pos, lexicon, [1, 0])
+    featureset += sample_handling(neg, lexicon, [0, 1])
     random.shuffle(featureset)
     featureset = np.array(featureset)
 
     testing_size = int(test_size*len(featureset))
-    print("testing size:",testing_size)
+    print("testing size:", testing_size)
 
-    train_x = list(featureset[:,0][:-testing_size])
-    train_y = list(featureset[:,1][:-testing_size])
-    test_x = list(featureset[:,0][-testing_size:])
-    test_y = list(featureset[:,1][-testing_size:])
+    train_x = list(featureset[:, 0][:-testing_size])
+    train_y = list(featureset[:, 1][:-testing_size])
+    test_x = list(featureset[:, 0][-testing_size:])
+    test_y = list(featureset[:, 1][-testing_size:])
 
     return train_x, train_y, test_x, test_y
 
+
 if __name__ == '__main__':
-    train_x,train_y, test_x,test_y = create_feature_sets_and_labels('ident_nn_pos.txt','ident_nn_neg.txt')
+    train_x, train_y, test_x, test_y = create_feature_sets_and_labels('ident_nn_pos.txt', 'ident_nn_neg.txt')
     # pickle this data
-    with open('sentiment_set.pickle','wb') as f:
-        pickle.dump([train_x,train_y,test_x,test_y],f)
+    with open('sentiment_set.pickle', 'wb') as f:
+        pickle.dump([train_x, train_y, test_x, test_y], f)
