@@ -1,6 +1,6 @@
 #! /usr/bin/env python
 # -*- coding:utf-8
-# Using Large Data from Stanford(Sentiment140), Predicting sentiments using a deep neural network with tensorflow. 
+# Using Large Data from Stanford(Sentiment140), Predicting sentiments using a deep neural network with tensorflow.
 # Special thanks: Harisson@pythonprogramming.net
 
 '''
@@ -9,6 +9,18 @@
     Date created: 11/23/2017
     Python Version: 3.62
 '''
+
+from os import path
+from os import getcwd
+import tensorflow as tf
+import nltk  # flake8: noqa
+from nltk.tokenize import word_tokenize
+from nltk.stem import WordNetLemmatizer
+from data_preprocessing import SentimentPreProcess
+import pickle
+import numpy as np
+import argparse
+
 '''
 This is applying the neural network created for predicting sentiments. It works
 on the output of data_preprocessing.py.
@@ -24,7 +36,7 @@ different the output is from the training data output. Lastly, we will use an
 optimizer function: Adam optimizer, to minimize the cost. Cost is minimized by
 tinkering with weights. How quickly we want to lower the cost is determined by
 learning rate. The lower the value for learning rate, the slower we will learn, and
-more likely we'd get better results. 
+more likely we'd get better results.
 
 The act of sending the data straight through our network means we're operating a feed
 forward neural network. The adjustments of weights backwards is our back propagation.
@@ -33,17 +45,6 @@ called an Epoch. We can pick any number for number of epochs. After each epoch, 
 hopefully further fine-tuned our weights lowering our cost and improving accuracy.
 
 '''
-from os import path
-from os import getcwd
-import tensorflow as tf
-import nltk
-from nltk.tokenize import word_tokenize
-from nltk.stem import WordNetLemmatizer
-from data_preprocessing import SentimentPreProcess
-import pickle
-import numpy as np
-import argparse
-
 process = SentimentPreProcess()
 process.load_lexicon('lexicon.pickle')
 lemmatizer = WordNetLemmatizer()
@@ -63,13 +64,15 @@ Batches are used to control how many features we are going to optimize at once, 
 are limited by memory.
 
 '''
-max_training_size=1600000
+max_training_size = 1600000
+
 
 def check_range(value):
-    ivalue=int(value)
+    ivalue = int(value)
     if (ivalue <= 0) or (ivalue > max_training_size):
         raise argparse.ArgumentTypeError("%s is an invalid value" % value)
     return ivalue
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Train a neural network of\
@@ -79,21 +82,20 @@ if __name__ == "__main__":
                         specifying training data size. Maximum is ' +
                         str(max_training_size),
                         type=check_range)
-    parser.add_argument('-e', "--epochs",default=10, help='an integer specifying\
+    parser.add_argument('-e',  "--epochs", default=10, help='an integer specifying\
                         number of epochs for training.',
                         type=int)
-    parser.add_argument('-p',"--predict",type=str,help='string to predict\
-                        sentiment')
+    parser.add_argument('-p', "--predict", type=str, help='string to predict sentiment')
     args = parser.parse_args()
 
-#important parameters and properties
-data_delimiter=process.data_delimiter
+# important parameters and properties
+data_delimiter = process.data_delimiter
 batch_size = 32
 training_size = args.num_training_size
 total_batches = int(training_size/batch_size)
 hm_epochs = args.epochs
 data_width = len(process.lexicon)
-print("data width:",data_width)
+print("data width:", data_width)
 n_nodes_hl1 = data_width
 n_nodes_hl2 = 1800
 n_classes = 2
@@ -111,7 +113,7 @@ y = tf.placeholder('float')
 # biases will make sure that a neuron may still fire even if all inputs are 0
 # tf.random_normal outputs random values for the shape we want
 # here no flow happens yet, this is just definition
-hidden_1_layer = {'f_fum':n_nodes_hl1,
+hidden_1_layer = {'f_fum': n_nodes_hl1,
                     'weight': tf.Variable(tf.random_normal([data_width, n_nodes_hl1])),
                     'bias': tf.Variable(tf.random_normal([n_nodes_hl1]))}
 
@@ -250,7 +252,7 @@ def test_neural_network():
                 except:
                    pass
         print('Tested',counter,'samples.')
-        
+
         test_x = np.array(feature_sets)
         test_y = np.array(labels)
 
