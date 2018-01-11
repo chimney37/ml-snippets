@@ -4,7 +4,7 @@
 # Special thanks: Harisson@pythonprogramming.net
 
 '''
-    File name: cnn_test.py
+    File name: cnn_improved.py
     Author: chimney37
     Date created: 12/09/2017
     Python Version: 3.62
@@ -78,7 +78,7 @@ mnist = input_data.read_data_sets("/tmp/data/", one_hot=True)
 '''
 in building the model, we consider the number of nodes each hidden layer will have.
 Nodes in each layer need not be identical, but it can be tweaked, depending on what
-we are trying to model (TBD).
+we are trying to model ().
 
 Batches are used to control how many features we are going to optimize at once, as computers
 are limited by memory.

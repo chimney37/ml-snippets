@@ -78,7 +78,7 @@ model_file = 'quicktest.model'
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Train a neural network of predicting digits from images')
-    parser.add_argument('-e',  '--epochs', default=10, help='an integer specifying\
+    parser.add_argument('-e', '--epochs', default=10, help='an integer specifying\
                         number of epochs for training.',
                         type=int)
     parser.add_argument('-t', '--train', action='store_true', help='training mode')
